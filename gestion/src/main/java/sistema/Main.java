@@ -8,24 +8,39 @@ public class Main extends JFrame{
 
     public Main(){
         setTitle("Sistema de Gestion de Productos");
-        setSize(600, 400);               // Tamaño
-        setLocationRelativeTo(null);     // Centrar ventana
+        setSize(600, 400);               
+        setLocationRelativeTo(null);     
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         JPanel panelSuperior = new JPanel();
+        panelSuperior.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panelSuperior.add(new JLabel("Gestión de Productos"));
+
         DefaultListModel<Producto> model = new DefaultListModel<>();
         JList<Producto> list = new JList<>(model);
-        add(panelSuperior);
-        add(list);
+        JScrollPane scroll = new JScrollPane(list);
+
         JPanel panelCentral = new JPanel();
+        panelCentral.setLayout(new BorderLayout());
+        panelCentral.add(scroll, BorderLayout.CENTER);
+
+        JPanel panelInferior = new JPanel();
+        panelInferior.setLayout(new FlowLayout(FlowLayout.CENTER));
+
         JButton añadir = new JButton("Añadir");
         JButton editar = new JButton("Editar");
         JButton eliminar = new JButton("Eliminar");
-        add(panelCentral);
-        add(añadir);
-        add(editar);
-        add(eliminar);
+
+        panelInferior.add(añadir);
+        panelInferior.add(editar);
+        panelInferior.add(eliminar);
+
+        setLayout(new BorderLayout());
+        add(panelSuperior, BorderLayout.NORTH);
+        add(panelCentral, BorderLayout.CENTER);
+        add(panelInferior, BorderLayout.SOUTH);
+
         añadir.addActionListener(e ->{
             String name = JOptionPane.showInputDialog("Dime el nombre del producto");
             double price = 0.0;
@@ -42,7 +57,11 @@ public class Main extends JFrame{
             Producto producto = new Producto(name, price, cantidad, weight, category);
             model.addElement(producto);
         });
-
+        editar.addActionListener(e ->{
+            String name = JOptionPane.showInputDialog("Cual es el nombre del producto");
+            // completar
+        });
+        // añadir eliminar
         setVisible(true);
     }
 
