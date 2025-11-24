@@ -31,10 +31,12 @@ public class Main extends JFrame{
         JButton añadir = new JButton("Añadir");
         JButton editar = new JButton("Editar");
         JButton eliminar = new JButton("Eliminar");
+        JButton calculos = new JButton("Calcular"); // hacerlo
 
         panelInferior.add(añadir);
         panelInferior.add(editar);
         panelInferior.add(eliminar);
+        panelInferior.add(calculos);
 
         setLayout(new BorderLayout());
         add(panelSuperior, BorderLayout.NORTH);
@@ -58,10 +60,36 @@ public class Main extends JFrame{
             model.addElement(producto);
         });
         editar.addActionListener(e ->{
-            String name = JOptionPane.showInputDialog("Cual es el nombre del producto");
-            // completar
+            int index = list.getSelectedIndex();
+            if (index == -1) {
+                JOptionPane.showMessageDialog(null, "Selecciona un producto para editar");
+                return;
+            }
+            Producto prod = model.getElementAt(index);
+            String name = JOptionPane.showInputDialog("Dime el nombre del producto");
+            double price = 0.0;
+            int cantidad = 0;
+            float weight = 0f;
+            try {
+                price = Double.parseDouble(JOptionPane.showInputDialog("Dime el precio del producto"));
+                cantidad = Integer.parseInt(JOptionPane.showInputDialog("Pon la cantidad del producto"));
+                weight = Float.parseFloat(JOptionPane.showInputDialog("Pon el peso del producto"));
+            } catch (NumberFormatException n) {
+                JOptionPane.showInputDialog("No pongas texto en donde debe estar el numero");
+            }
+            String category = JOptionPane.showInputDialog("Pon la categoria del producto");
+            prod.SetAll(name, price, cantidad, weight, category);
+            model.setElementAt(prod, index);
+            
         });
-        // añadir eliminar
+        eliminar.addActionListener(e->{
+            int index = list.getSelectedIndex();
+            if (index == -1) {
+                JOptionPane.showMessageDialog(null, "Selecciona un producto para editar");
+                return;
+            }
+            model.remove(index);
+        });
         setVisible(true);
     }
 
