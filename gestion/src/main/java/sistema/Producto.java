@@ -21,6 +21,9 @@ public class Producto {
         this.weight = weight;
         this.category = category;
     }
+    public double getPrice() {
+        return price;
+    }
     @Override
     public String toString(){
         return "Nombre: " + name + " Precio: " + price + " Cantidad: " + cantidad + " Peso: " + weight + " Categoria: " + category;
