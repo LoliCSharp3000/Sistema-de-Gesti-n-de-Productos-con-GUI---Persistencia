@@ -5,6 +5,7 @@ import java.awt.*;
 
 public class VentanaCalculos extends JFrame {
     private DefaultListModel<Producto> model;
+
     public VentanaCalculos(DefaultListModel<Producto> model){
         this.model = model;
 
@@ -64,7 +65,23 @@ public class VentanaCalculos extends JFrame {
             total = total/model.size();
             textmodel.addElement("Precio medio: " + total);
         });
-        //Poner acciones en otros botones
+        cantidadTotal.addActionListener(e->{
+            double total = 0;
+            for (int i = 0; i < model.size(); i++) {
+                total += model.get(i).getCantidad();
+            }
+            textmodel.addElement("Cantidad Total: " + total);
+        });
+        pesoTotal.addActionListener(e->{
+            double total = 0;
+            for (int i = 0; i < model.size(); i++) {
+                total += model.get(i).getWeight();
+            }
+            textmodel.addElement("Peso Total: " + total);
+        });
+        comparar.addActionListener(e->{
+            
+        });
         add(panelSuperior, BorderLayout.NORTH);
         add(panelCentral, BorderLayout.CENTER);
         add(panelInferior, BorderLayout.SOUTH);

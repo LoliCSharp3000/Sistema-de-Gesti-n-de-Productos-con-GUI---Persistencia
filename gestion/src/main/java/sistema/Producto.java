@@ -24,6 +24,12 @@ public class Producto {
     public double getPrice() {
         return price;
     }
+    public int getCantidad() {
+        return cantidad;
+    }
+    public float getWeight() {
+        return weight;
+    }
     @Override
     public String toString(){
         return "Nombre: " + name + " Precio: " + price + " Cantidad: " + cantidad + " Peso: " + weight + " Categoria: " + category;
