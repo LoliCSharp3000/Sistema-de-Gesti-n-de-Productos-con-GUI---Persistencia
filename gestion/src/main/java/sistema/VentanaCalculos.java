@@ -2,6 +2,7 @@ package sistema;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class VentanaCalculos extends JFrame {
     private DefaultListModel<Producto> model;
@@ -62,7 +63,12 @@ public class VentanaCalculos extends JFrame {
             for (int i = 0; i < model.size(); i++) {
                 total += model.get(i).getPrice();
             }
-            total = total/model.size();
+            try {
+                total = total/model.size();
+            } catch (ArithmeticException a) {
+                textmodel.addElement("ERROR: No hay productos");
+                dispose();
+            }
             textmodel.addElement("Precio medio: " + total);
         });
         cantidadTotal.addActionListener(e->{
@@ -80,7 +86,19 @@ public class VentanaCalculos extends JFrame {
             textmodel.addElement("Peso Total: " + total);
         });
         comparar.addActionListener(e->{
-            
+            ArrayList<Producto> copia = new ArrayList<>();
+
+            for (int i = 0; i < model.size(); i++) {
+                copia.add(model.get(i));
+            }
+
+            copia.sort((a, b) -> Double.compare(a.getPrice(), b.getPrice()));
+
+            textmodel.addElement("Productos ordenados por precio:");
+    
+            for (Producto p : copia) {
+                textmodel.addElement("• " + p.getName() + " = " + p.getPrice());
+            }
         });
         add(panelSuperior, BorderLayout.NORTH);
         add(panelCentral, BorderLayout.CENTER);

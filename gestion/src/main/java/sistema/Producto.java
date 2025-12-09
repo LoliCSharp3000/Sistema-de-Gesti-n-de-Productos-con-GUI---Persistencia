@@ -21,6 +21,9 @@ public class Producto {
         this.weight = weight;
         this.category = category;
     }
+    public String getName() {
+        return name;
+    }
     public double getPrice() {
         return price;
     }

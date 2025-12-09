@@ -105,6 +105,7 @@ public class Main extends JFrame{
         });
         
         calculos.addActionListener(e->{
+            //añadir para que no pueda ser null
             new VentanaCalculos(model);
         });
         add(panelSuperior, BorderLayout.NORTH);
