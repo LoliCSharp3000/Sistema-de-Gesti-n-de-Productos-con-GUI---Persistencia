@@ -2,6 +2,14 @@ package sistema;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.File;
 
 public class Main extends JFrame{
     //falta JSON
@@ -56,6 +64,8 @@ public class Main extends JFrame{
         panelInferior.add(eliminar);
         panelInferior.add(calculos);
 
+        cargarProductos(model);
+
         añadir.addActionListener(e ->{
             String name = "";
             double price = 0.0;
@@ -63,7 +73,7 @@ public class Main extends JFrame{
             float weight = 0f;
             try {
                 name = JOptionPane.showInputDialog("Dime el nombre del producto");
-                if (name.trim().isEmpty()||name == null) {
+                if (name == null || name.trim().isEmpty()) {
                     throw new IllegalArgumentException("El nombre no puede estar vacío");
                 }
                 price = Double.parseDouble(JOptionPane.showInputDialog("Dime el precio del producto"));
@@ -79,16 +89,21 @@ public class Main extends JFrame{
                     throw new IllegalArgumentException("No puede ser grati ni negativo");
                 }
             } catch (NumberFormatException n) {
-                JOptionPane.showInputDialog("No pongas texto en donde debe estar el numero");
+                JOptionPane.showMessageDialog(null, "Debes ingresar un número válido");
+                return;
             } catch (IllegalArgumentException i) {
                 JOptionPane.showMessageDialog(null, "❌ Error: " + i.getMessage());
+                return;
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "❌ Error inesperado: " + ex.getMessage());
+                return;
             }
             String category = JOptionPane.showInputDialog("Pon la categoria del producto");
             Producto producto = new Producto(name, price, cantidad, weight, category);
             model.addElement(producto);
+            guardarProductos(model);
         });
+
         editar.addActionListener(e ->{
             int index = list.getSelectedIndex();
             if (index == -1) {
@@ -96,21 +111,41 @@ public class Main extends JFrame{
                 return;
             }
             Producto prod = model.getElementAt(index);
-            String name = JOptionPane.showInputDialog("Dime el nombre del producto");
+            String name = "";
             double price = 0.0;
             int cantidad = 0;
             float weight = 0f;
             try {
-                price = Double.parseDouble(JOptionPane.showInputDialog("Dime el precio del producto"));
-                cantidad = Integer.parseInt(JOptionPane.showInputDialog("Pon la cantidad del producto"));
-                weight = Float.parseFloat(JOptionPane.showInputDialog("Pon el peso del producto"));
+                name = JOptionPane.showInputDialog("Dime el nombre del producto", prod.getName());
+                if (name == null || name.trim().isEmpty()) {
+                    throw new IllegalArgumentException("El nombre no puede estar vacío");
+                }
+                price = Double.parseDouble(JOptionPane.showInputDialog("Dime el precio del producto", prod.getPrice()));
+                if (price <= 0) {
+                    throw new IllegalArgumentException("No puede ser grati ni negativo");
+                }
+                cantidad = Integer.parseInt(JOptionPane.showInputDialog("Pon la cantidad del producto", prod.getCantidad()));
+                if (cantidad <= 0) {
+                    throw new IllegalArgumentException("No puede ser grati ni negativo");
+                }
+                weight = Float.parseFloat(JOptionPane.showInputDialog("Pon el peso del producto")); // terminar con la edicion
+                if (weight <= 0) {
+                    throw new IllegalArgumentException("No puede ser grati ni negativo");
+                }
             } catch (NumberFormatException n) {
-                JOptionPane.showInputDialog("No pongas texto en donde debe estar el numero");
+                JOptionPane.showMessageDialog(null, "Debes ingresar un número válido");
+                return;
+            } catch (IllegalArgumentException i) {
+                JOptionPane.showMessageDialog(null, "❌ Error: " + i.getMessage());
+                return;
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "❌ Error inesperado: " + ex.getMessage());
+                return;
             }
             String category = JOptionPane.showInputDialog("Pon la categoria del producto");
             prod.SetAll(name, price, cantidad, weight, category);
             model.setElementAt(prod, index);
-            
+            guardarProductos(model);
         });
         eliminar.addActionListener(e->{
             int index = list.getSelectedIndex();
@@ -119,6 +154,7 @@ public class Main extends JFrame{
                 return;
             }
             model.remove(index);
+            guardarProductos(model);
         });
         
         calculos.addActionListener(e->{
@@ -146,5 +182,36 @@ public class Main extends JFrame{
 
     public static void main(String[] args) {
         new Main();
+    }
+
+    public static void guardarProductos(DefaultListModel<Producto> model){
+        ArrayList<Producto> lista = new ArrayList<>();
+        for (int index = 0; index < model.size(); index++) {
+            lista.add(model.getElementAt(index));
+        }
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        try(FileWriter writer = new FileWriter("productos.json")) {
+            gson.toJson(lista, writer);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error guardando productos: " + e.getMessage());
+        }
+    }
+    public static void cargarProductos(DefaultListModel<Producto> model){
+        Gson gson = new Gson();
+        File file = new File("productos.json");
+        if (!file.exists()) {
+            return;
+        }
+        try(FileReader reader = new FileReader(file)) {
+            ArrayList<Producto> lista = gson.fromJson(reader, new TypeToken<ArrayList<Producto>>(){}.getType()); 
+            model.clear();
+            if (lista != null) {
+                for (Producto p : lista) {
+                    model.addElement(p);
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "No se pudo cargar productos: " + e.getMessage());
+        }
     }
 }
