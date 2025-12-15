@@ -86,19 +86,24 @@ public class VentanaCalculos extends JFrame {
             textmodel.addElement("Peso Total: " + total);
         });
         comparar.addActionListener(e->{
-            ArrayList<Producto> copia = new ArrayList<>();
+            try {
+                ArrayList<Producto> copia = new ArrayList<>();
 
-            for (int i = 0; i < model.size(); i++) {
-                copia.add(model.get(i));
-            }
+                for (int i = 0; i < model.size(); i++) {
+                    copia.add(model.get(i));
+                }
 
-            copia.sort((a, b) -> Double.compare(a.getPrice(), b.getPrice()));
+                copia.sort((a, b) -> Double.compare(a.getPrice(), b.getPrice()));
 
-            textmodel.addElement("Productos ordenados por precio:");
+                textmodel.addElement("Productos ordenados por precio:");
     
-            for (Producto p : copia) {
-                textmodel.addElement("• " + p.getName() + " = " + p.getPrice());
+                for (Producto p : copia) {
+                    textmodel.addElement("• " + p.getName() + " = " + p.getPrice());
+                }
+            } catch (NullPointerException n) {
+                JOptionPane.showMessageDialog(null, "En algunos de los elementos no hay precio");
             }
+            
         });
         add(panelSuperior, BorderLayout.NORTH);
         add(panelCentral, BorderLayout.CENTER);

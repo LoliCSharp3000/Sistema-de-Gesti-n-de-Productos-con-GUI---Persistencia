@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Main extends JFrame{
-
+    //falta JSON
 
     public Main(){
         setTitle("Sistema de Gestión de Productos");
@@ -57,16 +57,33 @@ public class Main extends JFrame{
         panelInferior.add(calculos);
 
         añadir.addActionListener(e ->{
-            String name = JOptionPane.showInputDialog("Dime el nombre del producto");
+            String name = "";
             double price = 0.0;
             int cantidad = 0;
             float weight = 0f;
             try {
+                name = JOptionPane.showInputDialog("Dime el nombre del producto");
+                if (name.trim().isEmpty()||name == null) {
+                    throw new IllegalArgumentException("El nombre no puede estar vacío");
+                }
                 price = Double.parseDouble(JOptionPane.showInputDialog("Dime el precio del producto"));
+                if (price <= 0) {
+                    throw new IllegalArgumentException("No puede ser grati ni negativo");
+                }
                 cantidad = Integer.parseInt(JOptionPane.showInputDialog("Pon la cantidad del producto"));
+                if (cantidad <= 0) {
+                    throw new IllegalArgumentException("No puede ser grati ni negativo");
+                }
                 weight = Float.parseFloat(JOptionPane.showInputDialog("Pon el peso del producto"));
+                if (weight <= 0) {
+                    throw new IllegalArgumentException("No puede ser grati ni negativo");
+                }
             } catch (NumberFormatException n) {
                 JOptionPane.showInputDialog("No pongas texto en donde debe estar el numero");
+            } catch (IllegalArgumentException i) {
+                JOptionPane.showMessageDialog(null, "❌ Error: " + i.getMessage());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "❌ Error inesperado: " + ex.getMessage());
             }
             String category = JOptionPane.showInputDialog("Pon la categoria del producto");
             Producto producto = new Producto(name, price, cantidad, weight, category);
@@ -105,7 +122,10 @@ public class Main extends JFrame{
         });
         
         calculos.addActionListener(e->{
-            //añadir para que no pueda ser null
+            if (model.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "❗ No hay productos para calcular", "Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             new VentanaCalculos(model);
         });
         add(panelSuperior, BorderLayout.NORTH);
