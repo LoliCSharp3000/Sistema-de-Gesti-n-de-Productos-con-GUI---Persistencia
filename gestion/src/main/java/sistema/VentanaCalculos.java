@@ -5,11 +5,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class VentanaCalculos extends JFrame {
-    private DefaultListModel<Producto> model;
-
     public VentanaCalculos(DefaultListModel<Producto> model){
-        this.model = model;
-
         setTitle("Cálculos del Sistema");
         setSize(650, 450);               
         setLocationRelativeTo(null);     
@@ -63,16 +59,11 @@ public class VentanaCalculos extends JFrame {
             for (int i = 0; i < model.size(); i++) {
                 total += model.get(i).getPrice();
             }
-            try {
-                total = total/model.size();
-            } catch (ArithmeticException a) {
-                textmodel.addElement("ERROR: No hay productos");
-                dispose();
-            }
+            total = total/model.size();
             textmodel.addElement("Precio medio: " + total);
         });
         cantidadTotal.addActionListener(e->{
-            double total = 0;
+            int total = 0;
             for (int i = 0; i < model.size(); i++) {
                 total += model.get(i).getCantidad();
             }
@@ -86,24 +77,15 @@ public class VentanaCalculos extends JFrame {
             textmodel.addElement("Peso Total: " + total);
         });
         comparar.addActionListener(e->{
-            try {
-                ArrayList<Producto> copia = new ArrayList<>();
-
-                for (int i = 0; i < model.size(); i++) {
-                    copia.add(model.get(i));
-                }
-
-                copia.sort((a, b) -> Double.compare(a.getPrice(), b.getPrice()));
-
-                textmodel.addElement("Productos ordenados por precio:");
-    
-                for (Producto p : copia) {
-                    textmodel.addElement("• " + p.getName() + " = " + p.getPrice());
-                }
-            } catch (NullPointerException n) {
-                JOptionPane.showMessageDialog(null, "En algunos de los elementos no hay precio");
+            ArrayList<Producto> copia = new ArrayList<>();
+            for (int i = 0; i < model.size(); i++) {
+                copia.add(model.get(i));
             }
-            
+            copia.sort((a, b) -> Double.compare(a.getPrice(), b.getPrice()));
+            textmodel.addElement("Productos ordenados por precio:");
+            for (Producto p : copia) {
+                textmodel.addElement("• " + p.getName() + " = " + p.getPrice());
+            }
         });
         add(panelSuperior, BorderLayout.NORTH);
         add(panelCentral, BorderLayout.CENTER);

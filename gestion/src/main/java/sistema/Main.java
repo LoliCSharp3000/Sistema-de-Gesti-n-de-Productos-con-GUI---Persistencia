@@ -65,25 +65,7 @@ public class Main extends JFrame{
         cargarProductos(model);
 
         añadir.addActionListener(e ->{
-            Producto producto = new Producto();
-            try {
-                String name = JOptionPane.showInputDialog("Dime el nombre del producto");
-                double price = Double.parseDouble(JOptionPane.showInputDialog("Dime el precio del producto"));
-                int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Pon la cantidad del producto"));
-                float weight = Float.parseFloat(JOptionPane.showInputDialog("Pon el peso del producto"));
-                String category = JOptionPane.showInputDialog("Pon la categoria del producto");
-                producto = new Producto(name, price, cantidad, weight, category);
-            } catch (NumberFormatException n) {
-                JOptionPane.showMessageDialog(null, "Debes ingresar un número válido");
-                return;
-            } catch (IllegalArgumentException i) {
-                JOptionPane.showMessageDialog(null, "❌ Error: " + i.getMessage());
-                return;
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "❌ Error inesperado: " + ex.getMessage());
-                return;
-            }
-            
+            Producto producto = pedirProducto();
             model.addElement(producto);
             guardarProductos(model);
         });
@@ -94,24 +76,7 @@ public class Main extends JFrame{
                 JOptionPane.showMessageDialog(null, "Selecciona un producto para editar");
                 return;
             }
-            Producto prod = model.getElementAt(index);
-            try {
-                String name = JOptionPane.showInputDialog("Dime el nombre del producto");
-                double price = Double.parseDouble(JOptionPane.showInputDialog("Dime el precio del producto"));
-                int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Pon la cantidad del producto"));
-                float weight = Float.parseFloat(JOptionPane.showInputDialog("Pon el peso del producto"));
-                String category = JOptionPane.showInputDialog("Pon la categoria del producto");
-                prod.setAll(name, price, cantidad, weight, category);
-            } catch (NumberFormatException n) {
-                JOptionPane.showMessageDialog(null, "Debes ingresar un número válido");
-                return;
-            } catch (IllegalArgumentException i) {
-                JOptionPane.showMessageDialog(null, "❌ Error: " + i.getMessage());
-                return;
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "❌ Error inesperado: " + ex.getMessage());
-                return;
-            }
+            Producto prod = pedirProducto();
             model.setElementAt(prod, index);
             guardarProductos(model);
         });
@@ -121,8 +86,13 @@ public class Main extends JFrame{
                 JOptionPane.showMessageDialog(null, "Selecciona un producto para eliminar");
                 return;
             }
-            model.remove(index);
-            guardarProductos(model);
+            int r = JOptionPane.showConfirmDialog(null, "¿Seguro que quieres eliminar?", "Confirmar", JOptionPane.YES_NO_OPTION);
+            if (r != JOptionPane.YES_NO_OPTION) {
+                return;
+            }else{
+                model.remove(index);
+                guardarProductos(model);
+            }
         });
         
         calculos.addActionListener(e->{
@@ -181,5 +151,22 @@ public class Main extends JFrame{
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "No se pudo cargar productos: " + e.getMessage());
         }
+    }
+    private Producto pedirProducto(){
+        try {
+            String name = JOptionPane.showInputDialog("Dime el nombre del producto");
+            double price = Double.parseDouble(JOptionPane.showInputDialog("Dime el precio del producto"));
+            int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Pon la cantidad del producto"));
+            float weight = Float.parseFloat(JOptionPane.showInputDialog("Pon el peso del producto"));
+            String category = JOptionPane.showInputDialog("Pon la categoria del producto");
+            return new Producto(name, price, cantidad, weight, category);
+        } catch (NumberFormatException n) {
+            JOptionPane.showMessageDialog(null, "Debes ingresar un número válido");
+        } catch (IllegalArgumentException i) {
+            JOptionPane.showMessageDialog(null, "❌ Error: " + i.getMessage());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "❌ Error inesperado: " + ex.getMessage());
+        }
+        return null;
     }
 }
