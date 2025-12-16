@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.io.File;
 
 public class Main extends JFrame{
-    //falta JSON
-
     public Main(){
         setTitle("Sistema de Gestión de Productos");
         setSize(650, 450);
@@ -67,27 +65,14 @@ public class Main extends JFrame{
         cargarProductos(model);
 
         añadir.addActionListener(e ->{
-            String name = "";
-            double price = 0.0;
-            int cantidad = 0;
-            float weight = 0f;
+            Producto producto = new Producto();
             try {
-                name = JOptionPane.showInputDialog("Dime el nombre del producto");
-                if (name == null || name.trim().isEmpty()) {
-                    throw new IllegalArgumentException("El nombre no puede estar vacío");
-                }
-                price = Double.parseDouble(JOptionPane.showInputDialog("Dime el precio del producto"));
-                if (price <= 0) {
-                    throw new IllegalArgumentException("No puede ser grati ni negativo");
-                }
-                cantidad = Integer.parseInt(JOptionPane.showInputDialog("Pon la cantidad del producto"));
-                if (cantidad <= 0) {
-                    throw new IllegalArgumentException("No puede ser grati ni negativo");
-                }
-                weight = Float.parseFloat(JOptionPane.showInputDialog("Pon el peso del producto"));
-                if (weight <= 0) {
-                    throw new IllegalArgumentException("No puede ser grati ni negativo");
-                }
+                String name = JOptionPane.showInputDialog("Dime el nombre del producto");
+                double price = Double.parseDouble(JOptionPane.showInputDialog("Dime el precio del producto"));
+                int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Pon la cantidad del producto"));
+                float weight = Float.parseFloat(JOptionPane.showInputDialog("Pon el peso del producto"));
+                String category = JOptionPane.showInputDialog("Pon la categoria del producto");
+                producto = new Producto(name, price, cantidad, weight, category);
             } catch (NumberFormatException n) {
                 JOptionPane.showMessageDialog(null, "Debes ingresar un número válido");
                 return;
@@ -98,8 +83,7 @@ public class Main extends JFrame{
                 JOptionPane.showMessageDialog(null, "❌ Error inesperado: " + ex.getMessage());
                 return;
             }
-            String category = JOptionPane.showInputDialog("Pon la categoria del producto");
-            Producto producto = new Producto(name, price, cantidad, weight, category);
+            
             model.addElement(producto);
             guardarProductos(model);
         });
@@ -111,27 +95,13 @@ public class Main extends JFrame{
                 return;
             }
             Producto prod = model.getElementAt(index);
-            String name = "";
-            double price = 0.0;
-            int cantidad = 0;
-            float weight = 0f;
             try {
-                name = JOptionPane.showInputDialog("Dime el nombre del producto", prod.getName());
-                if (name == null || name.trim().isEmpty()) {
-                    throw new IllegalArgumentException("El nombre no puede estar vacío");
-                }
-                price = Double.parseDouble(JOptionPane.showInputDialog("Dime el precio del producto", prod.getPrice()));
-                if (price <= 0) {
-                    throw new IllegalArgumentException("No puede ser grati ni negativo");
-                }
-                cantidad = Integer.parseInt(JOptionPane.showInputDialog("Pon la cantidad del producto", prod.getCantidad()));
-                if (cantidad <= 0) {
-                    throw new IllegalArgumentException("No puede ser grati ni negativo");
-                }
-                weight = Float.parseFloat(JOptionPane.showInputDialog("Pon el peso del producto")); // terminar con la edicion
-                if (weight <= 0) {
-                    throw new IllegalArgumentException("No puede ser grati ni negativo");
-                }
+                String name = JOptionPane.showInputDialog("Dime el nombre del producto");
+                double price = Double.parseDouble(JOptionPane.showInputDialog("Dime el precio del producto"));
+                int cantidad = Integer.parseInt(JOptionPane.showInputDialog("Pon la cantidad del producto"));
+                float weight = Float.parseFloat(JOptionPane.showInputDialog("Pon el peso del producto"));
+                String category = JOptionPane.showInputDialog("Pon la categoria del producto");
+                prod.setAll(name, price, cantidad, weight, category);
             } catch (NumberFormatException n) {
                 JOptionPane.showMessageDialog(null, "Debes ingresar un número válido");
                 return;
@@ -142,8 +112,6 @@ public class Main extends JFrame{
                 JOptionPane.showMessageDialog(null, "❌ Error inesperado: " + ex.getMessage());
                 return;
             }
-            String category = JOptionPane.showInputDialog("Pon la categoria del producto");
-            prod.SetAll(name, price, cantidad, weight, category);
             model.setElementAt(prod, index);
             guardarProductos(model);
         });
